@@ -28,6 +28,37 @@ module Enumerable
     newArr
   end
 
+  def my_all?(arg=nil)
+    my_each do |x|
+      if !block_given?
+        if arg
+          if arg.is_a? Class
+            if !x.is_a? arg
+              return false
+            end  
+          elsif arg.is_a? Regexp
+              if (x =~ arg).nil? 
+                return false
+              end
+          else
+            if !x == arg
+              return false
+            end
+          end
+        else
+          if x.nil? or x == false
+            return false
+          end
+        end
+      else
+        if !yield(x)
+          return false
+        end
+      end
+    end
+    true
+  end
+
 end
 
 puts "TEST: my_each"
@@ -57,4 +88,20 @@ puts "expected result: #=> [:foo]"
 puts "ACTUAL RESULT:" 
 print [:foo, :bar].my_select { |x| x == :foo }
 puts " "
+puts "\n"
+puts "TEST: my_all?"
+puts "expected result: "
+puts "#=> true"
+puts "#=> false"
+puts "#=> false"
+puts "#=> true"
+puts "#=> false"
+puts "#=> true"
+puts "ACTUAL RESULT:" 
+puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
+puts %w[ant bear cat].my_all? { |word| word.length >= 4 } 
+puts %w[ant bear cat].my_all?(/t/)                        
+puts [1, 2i, 3.14].my_all?(Numeric)                      
+puts [99, true, nil].my_all?                              
+puts [].my_all?                                         
 puts "\n"
