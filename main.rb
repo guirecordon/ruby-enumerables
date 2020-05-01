@@ -191,6 +191,10 @@ module Enumerable
 
 end
 
+def multiply_els(arr)
+    arr.my_inject(:*)
+end
+
 puts "TEST: my_each"
 puts "expected result: #=> [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]"
 puts "ACTUAL RESULT:"
@@ -308,4 +312,12 @@ longest = %w{ cat sheep bear }.my_inject do |memo, word|
 end
 puts longest                                           
 puts "\n"
+puts "\n"
+puts "TEST: multiply_els:"
+puts "expected result: #=> 40"
+puts "ACTUAL RESULT:"
+puts multiply_els([2,4,5])
+puts "\n"
+puts "\n"
+puts "------------END OF TESTING--------------"                         
 
