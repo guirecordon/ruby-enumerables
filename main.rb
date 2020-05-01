@@ -145,6 +145,50 @@ module Enumerable
     end
   end
 
+  def my_map(proc=nil)
+    return enum_for if !block_given?
+    
+    new_array = []
+    each do |x|
+      if proc
+        new_array << proc.call(x)
+      else
+        new_array << yield(x)
+      end
+    end
+    return new_array
+  end
+
+  def my_inject(init=nil, sym=nil)
+    working_array = self.to_a
+    if init and sym
+      acc = init
+      working_array.my_each do |x|
+        acc = acc.send(sym, x)  
+      end
+      return acc
+    elsif init and !block_given?
+      sym = init
+      acc = working_array[0]
+      for i in 1...working_array.length
+        acc = acc.send(sym, working_array[i])
+      end
+      return acc
+    elsif init and block_given?
+      acc = init
+      working_array.my_each do |x|
+        acc = yield(acc, x)
+      end
+      return acc
+    else
+        acc = working_array[0]
+        for i in 1...working_array.length
+        acc = yield(acc, working_array[i])
+        end
+        return acc
+    end
+  end
+
 end
 
 puts "TEST: my_each"
@@ -232,9 +276,36 @@ puts "expected results: "
 puts "#=> 4"
 puts "#=> 2"
 puts "#=> 3"
-puts "ACTUAL RESULTS:" 
+puts "ACTUAL RESULTS:"
 ary = [1, 2, 4, 2]
 puts ary.my_count               
 puts ary.my_count(2)            
 puts ary.my_count{ |x| x%2==0 } 
 puts "\n"
+puts "TEST: my_map:"
+puts "expected result: #=> [1, 4, 9, 16]"
+puts "ACTUAL RESULT:"
+print (1..4).my_map { |i| i*i }
+puts " "
+puts "expected result: #=> ['cat', 'cat', 'cat', 'cat']"
+puts "ACTUAL RESULT:"
+print (1..4).my_map { "cat"  }   
+puts "\n "
+puts "TEST: my_inject:"
+puts "expected result:"
+puts "#=> 45"
+puts "#=> 45"
+puts "#=> 151200"
+puts "#=> 151200"
+puts "#=> sheep"
+puts "ACTUAL RESULT:"
+puts (5..10).my_inject(:+)                             
+puts (5..10).my_inject { |sum, n| sum + n }            
+puts (5..10).my_inject(1, :*)                          
+puts (5..10).my_inject(1) { |product, n| product * n } 
+longest = %w{ cat sheep bear }.my_inject do |memo, word|
+   memo.length > word.length ? memo : word
+end
+puts longest                                           
+puts "\n"
+
