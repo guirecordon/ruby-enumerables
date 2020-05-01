@@ -1,7 +1,8 @@
 module Enumerable
   def my_each
     return enum_for unless block_given?
-    change2arr = self.is_a?(Range) ? to_a : self
+
+    change2arr = self.to_a if self.is_a?(Range)
     newArr = []
     for item in change2arr
       newArr << yield(item)
