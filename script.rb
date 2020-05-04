@@ -2,8 +2,7 @@ module Enumerable
   def my_each
     return enum_for unless block_given?
 
-    change2arr = self.to_a
-    for item in change2arr
+    for item in self
       yield(item)
     end
   end
@@ -11,160 +10,105 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    for i in 0...self.length
-      yield(self[i], i)  
+    for i in 0...length
+      yield(self[i], i)
     end
-    self
   end
 
   def my_select
     return enum_for unless block_given?
 
-    newArr = []
+    new_arr = []
     for item in self
-      newArr << item if yield(item)
+      new_arr << item if yield(item)
     end
-    newArr
+    new_arr
   end
 
-  def my_all?(arg=nil)
+  def my_all?(arg = nil)
     my_each do |x|
       if !block_given?
-        if arg
-          if arg.is_a? Class
-            if !x.is_a? arg
-              return false
-            end  
-          elsif arg.is_a? Regexp
-              if (x =~ arg).nil? 
-                return false
-              end
-          else
-            if !x == arg
-              return false
-            end
-          end
+        case arg
+        when Class
+          return false unless x.is_a? arg
+        when Regexp
+          return false unless (x =~ arg).nil?
         else
-          if x.nil? or x == false
-            return false
-          end
+          return false unless x.nil? or x == false
         end
       else
-        if !yield(x)
-          return false
-        end
+        return false unless yield(x)
       end
     end
     true
   end
 
-  def my_any?(arg=nil)
+  def my_any?(arg = nil)
     my_each do |x|
       if !block_given?
-        if arg
-          if arg.is_a? Class
-            if x.is_a? arg
-              return true
-            end
-          elsif arg.is_a? Regexp
-            if !(x =~ arg).nil?
-              return true
-            end
-          else
-            if x == arg
-              return true
-            end
-          end
+        case arg
+        when Class
+          return true if x.is_a? arg
+        when Regexp
+          return true unless (x =~ arg).nil?
         else
-          if !x.nil? or x == false
-            return true
-          end
+          return true unless x.nil? or x != false
         end
       else
-        if yield(x)
-          return true
-        end
+        return true if yield(x)
       end
     end
     false
   end
 
-  def my_none?(arg=nil)
+  def my_none?(arg = nil)
     my_each do |x|
       if !block_given?
-        if arg
-          if arg.is_a? Class
-            if x.is_a? arg
-              return false
-            end
-          elsif arg.is_a? Regexp
-            if !(x =~ arg).nil?
-              return false
-            end
-          else
-            if x == arg
-              return false
-            end
-          end
+        case arg
+        when Class
+          return false if x.is_a? arg
+        when Regexp
+          return false unless (x =~ arg).nil?
         else
-          if x 
-            return false
-          end
+          return false if x
         end
       else
-        if yield(x)
-          return false
-        end
+        return false if yield(x)
       end
     end
     true
   end
 
-  def my_count(arg=nil)
-    working_array = self.is_a?(Range) ? to_a : self
+  def my_count(arg = nil)
     counter = 0
     if !block_given?
-      if arg
-        working_array.my_each do |x|
-          if x == arg
-            counter += 1
-          end
-        end
-        return counter
-      else
-        return working_array.length
-      end
+      return length unless arg
+
+      (my_each { |x| counter += 1 if x == arg }) if arg
     else
-      working_array.my_each do |x|
-        if yield(x)
-          counter += 1
-        end
-      end
-      return counter
+      my_each { |x| counter += 1 if yield(x) }
     end
+    counter
   end
 
-  def my_map(proc=nil)
-    return enum_for if !block_given?
-    
+  def my_map(proc = nil)
+    return enum_for unless block_given?
+
     new_array = []
-    my_each do |x|
-      if proc
-        new_array << proc.call(x)
-      else
-        new_array << yield(x)
-      end
+    if proc
+      my_each { |x| new_array << proc.call(x) }
+    else
+      my_each { |x| new_array << yield(x) }
     end
-    return new_array
+    new_array
   end
 
-  def my_inject(init=nil, sym=nil)
-    working_array = self.to_a
+  def my_inject(init = nil, sym = nil)
+    list = self
+    working_array = list.to_a
     if init and sym
       acc = init
-      working_array.my_each do |x|
-        acc = acc.send(sym, x)  
-      end
+      working_array.my_each { |x| acc = acc.send(sym, x) }
     elsif init and !block_given?
       sym = init
       acc = working_array[0]
@@ -173,23 +117,17 @@ module Enumerable
       end
     elsif init and block_given?
       acc = init
-      working_array.my_each do |x|
-        acc = yield(acc, x)
-      end
+      working_array.my_each { |x| acc = yield(acc, x) }
     else
-        acc = working_array[0]
-        for i in 1...working_array.length
+      acc = working_array[0]
+      for i in 1...working_array.length
         acc = yield(acc, working_array[i])
-        end
+      end
     end
     acc
   end
-
 end
 
 def multiply_els(arr)
-    arr.my_inject(:*)
+  arr.my_inject(:*)
 end
-
-p [1,2,3,4].my_each
-
