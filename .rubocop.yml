@@ -7,7 +7,7 @@ AllCops:
   DisplayCopNames: true
 
 Metrics/CyclomaticComplexity:
-  Max: 12
+  Max: 10
 Metrics/PerceivedComplexity:
   Max: 12
 Metrics/ModuleLength:
@@ -24,6 +24,8 @@ Metrics/BlockLength:
   ExcludedMethods: ['describe']
   Max: 30
 
+Style/CaseEquality:  
+  Enabled: false
 Style/IfInsideElse:
   Enabled: false
 Style/For:

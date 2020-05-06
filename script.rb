@@ -26,54 +26,39 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    my_each do |x|
-      if !block_given?
-        case arg
-        when Class
-          return false unless x.is_a? arg
-        when Regexp
-          return false unless (x =~ arg).nil?
-        else
-          return false unless x.nil? or x == false
-        end
+    for i in 0...length
+      if block_given?
+        return false unless yield(self[i])
+      elsif arg
+        return false unless arg === self[i]
       else
-        return false unless yield(x)
+        return false unless self[i]
       end
     end
     true
   end
 
   def my_any?(arg = nil)
-    my_each do |x|
-      if !block_given?
-        case arg
-        when Class
-          return true if x.is_a? arg
-        when Regexp
-          return true unless (x =~ arg).nil?
-        else
-          return true unless x.nil? or x != false
-        end
+    for i in 0...length
+      if block_given?
+        return true if yield(self[i])
+      elsif arg
+        return true if arg === self[i]
       else
-        return true if yield(x)
+        return true if self[i]
       end
     end
     false
   end
 
   def my_none?(arg = nil)
-    my_each do |x|
-      if !block_given?
-        case arg
-        when Class
-          return false if x.is_a? arg
-        when Regexp
-          return false unless (x =~ arg).nil?
-        else
-          return false if x
-        end
+    for i in 0...length
+      if block_given?
+        return false if yield(self[i])
+      elsif arg
+        return false if arg === self[i]
       else
-        return false if yield(x)
+        return false if self[i]
       end
     end
     true
