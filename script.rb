@@ -1,6 +1,6 @@
 module Enumerable
   def my_each
-    return enum_for unless block_given?
+    return to_enum unless block_given?
 
     for item in self
       yield(item)
@@ -13,6 +13,7 @@ module Enumerable
     for i in 0...length
       yield(self[i], i)
     end
+    self
   end
 
   def my_select
@@ -26,7 +27,7 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    for i in 0...length
+    for i in 0...length 
       if block_given?
         return false unless yield(self[i])
       elsif arg
