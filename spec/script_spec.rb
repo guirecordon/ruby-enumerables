@@ -44,7 +44,9 @@ describe Enumerable do
   end
 
   describe "#my_select" do
-    let(:proco) { proc { |num| num > 5 } }
+    let(:arraio) { [1, 2, 3, 4, 5] }
+    let(:proco) { proc { |num| num.even? } }
+
     context "when no block is given" do
       it "returns an Enumerator" do
         expect(arraio.my_select.class).to eql(arraio.select.class)
@@ -69,7 +71,7 @@ describe Enumerable do
         expect(word.my_all? { block1 }).to eql(true)
       end
       it "returns true if the block never returns false or nil" do
-        expect(word.my_all? { block2 }).to eq(word.all? { block2 })
+        expect(word.my_all? { block2 }).to eql(word.all? { block2 })
       end
     end
 
@@ -91,6 +93,36 @@ describe Enumerable do
       it "return true if none of the collection members are false or nil" do
         expect([].my_all?).to eql(true)
       end
+
+    end
+  end
+
+  describe "#my_any?" do
+    let(:words) { %w[ant bear cat] }
+    let(:block1) { proc { |word| word.length >= 3 } }
+    let(:block2) { proc { |word| word.length >= 4 } }
+
+    context "when a block is passed" do
+      it "returns true if the block ever returns a value other than false or nil" do
+        expect(words.my_any? { block1 }).to eql(true)
+      end
+
+      it "returns true if the block ever returns a value other than false or nil" do
+        expect(words.my_any? { block2 }).to eql(true)
+      end
+
+      it "returns whether pattern === element for any collection member" do
+        expect(words.my_any?(/d/)).to eql(false)
+      end
+
+      it "returns whether pattern === element for any collection member" do
+        expect([nil, true, 99].any?(Integer)).to eql(true)
+      end
+
+      it "returns false for all elements are new" do
+        expect([].any?).to eql(false)
+      end
+
 
     end
   end
