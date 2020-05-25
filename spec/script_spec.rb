@@ -163,9 +163,26 @@ describe Enumerable do
       it "returns true only if none of the collection members is true" do
         expect([nil, false, true].my_none?).to eql(false)
       end
+    end
+  end
 
+  describe "#my_count" do
+    context "when no block nor argument is given" do
+      it "returns the count of items in the collection" do
+        expect(arraio.my_count).to eql(5)
+      end
+    end
 
+    context "when an argument is passed" do
+      it "returns how many times the argument is found in the collection" do
+        expect(arraio.my_count(2)).to eql(1)
+      end
+    end
 
+    context "when a block is given" do
+      it "returns how many times the block returns true" do
+        expect(arraio.my_count { |num| num.even? }).to eql(2)
+      end
     end
   end
 end
