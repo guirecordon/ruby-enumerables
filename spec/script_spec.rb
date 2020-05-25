@@ -185,4 +185,23 @@ describe Enumerable do
       end
     end
   end
+
+  describe "#my_map" do
+    context "when no block is given" do
+      it "returns an enumerator" do
+        expect(rangio.my_map.class).to eql(rangio.map.class)
+      end
+    end
+
+    context "when a block or a proc is passed" do
+      it "returns a new array with the results of running blocks once for every element in enum" do
+        expect(rangio.my_map {|x| x*x }).to eql([1, 4, 9, 16, 25])
+      end
+
+      it "returns a new array with the results of running blocks once for every element in enum" do
+        expect((1..4).my_map { "cat" }).to eql(["cat", "cat", "cat", "cat"])
+      end
+
+    end
+  end
 end
