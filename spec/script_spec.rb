@@ -230,3 +230,9 @@ describe Enumerable do
     end
   end
 end
+
+describe "#multiply_els" do
+  it "returns the total value of all elements multiplied" do
+    expect(multiply_els(5..10)).to eql(151_200)
+  end
+end
