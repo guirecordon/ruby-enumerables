@@ -6,6 +6,9 @@ describe Enumerable do
   let(:blocko) { |element| element }
   let(:hasho) { {} }
   let(:stringos) { %w(cat dog wombat) }
+  let(:block1) { proc { |x| x.length >= 3 }}
+  let(:block2) { proc { |x| x.length >= 4 }}
+  let(:words) { %w[ant bear cat] }
 
   describe "#my_each" do
     context "when no block is passed" do
@@ -44,7 +47,6 @@ describe Enumerable do
   end
 
   describe "#my_select" do
-    let(:arraio) { [1, 2, 3, 4, 5] }
     let(:proco) { proc { |num| num.even? } }
 
     context "when no block is given" do
@@ -55,29 +57,26 @@ describe Enumerable do
 
     context "when a block is given" do
       it "returns an array for all element for which the block returns a true value" do
-        expect(arraio.my_select { proco }).to eql(arraio.select { proco })
+        expect(arraio.my_select(&proco)).to eql([2, 4])
       end
     end
   end
 
   describe "#my_all?" do
-    let(:word) { %w[ant bear cat] }
     let(:number) { [1, 2i, 3.14] }
-    let(:block1) { proc { |x| x.length >= 3 }}
-    let(:block2) { proc { |x| x.length >= 4 }}
 
     context "when block is given" do
       it "returns true if the block never returns false or nil" do
-        expect(word.my_all? { block1 }).to eql(true)
+        expect(words.my_all?(&block1)).to eql(true)
       end
       it "returns true if the block never returns false or nil" do
-        expect(word.my_all? { block2 }).to eql(word.all? { block2 })
+        expect(words.my_all?(&block2)).to eql(false)
       end
     end
 
     context "when no block is given, instead a pattern is supplied" do
       it "returns true if pattern === element" do
-        expect(word.my_all?(/t/)).to eql(false)
+        expect(words.my_all?(/t/)).to eql(false)
       end
 
       it "returns true if a patter === element" do
@@ -98,19 +97,17 @@ describe Enumerable do
   end
 
   describe "#my_any?" do
-    let(:words) { %w[ant bear cat] }
-    let(:block1) { proc { |word| word.length >= 3 } }
-    let(:block2) { proc { |word| word.length >= 4 } }
-
     context "when a block is passed" do
       it "returns true if the block ever returns a value other than false or nil" do
-        expect(words.my_any? { block1 }).to eql(true)
+        expect(words.my_any?(&block1)).to eql(true)
       end
 
       it "returns true if the block ever returns a value other than false or nil" do
-        expect(words.my_any? { block2 }).to eql(true)
+        expect(words.my_any?(&block2)).to eql(true)
       end
+    end
 
+    context "when no block is passed" do
       it "returns whether pattern === element for any collection member" do
         expect(words.my_any?(/d/)).to eql(false)
       end
@@ -122,6 +119,51 @@ describe Enumerable do
       it "returns false for all elements are new" do
         expect([].any?).to eql(false)
       end
+
+    end
+  end
+
+  describe "#my_none" do
+    let(:block3) { proc { |word| word.length == 5 } }
+    let(:chifres) { [1, 3.14, 42] }
+
+    context "when there is a block" do
+      it "returns true if the block never returns true for all elements" do
+        expect(words.my_none?(&block3)).to eql(true)
+      end
+
+      it "returns true if the block never returns true for all elements" do
+        expect(words.my_none?(&block2)).to eql(false)
+      end
+    end
+
+    context "when a pattern is supplied" do
+      it "returns true whether pattern === element for none of the collection members" do
+        expect(chifres.my_none?(Float)).to eql(false)
+      end
+
+      it "returns true whether pattern === element for none of the collection members" do
+        expect(words.my_none?(/d/)).to eql(true)
+      end
+    end
+
+    context "when there is no block nor pattern given" do
+      it "returns true only if none of the collection members is true" do
+        expect([].my_none?).to eql(true)
+      end
+
+      it "returns true only if none of the collection members is true" do
+        expect([nil].my_none?).to eql(true)
+      end
+
+      it "returns true only if none of the collection members is true" do
+        expect([nil, false].my_none?).to eql(true)
+      end
+
+      it "returns true only if none of the collection members is true" do
+        expect([nil, false, true].my_none?).to eql(false)
+      end
+
 
 
     end
