@@ -201,7 +201,32 @@ describe Enumerable do
       it "returns a new array with the results of running blocks once for every element in enum" do
         expect((1..4).my_map { "cat" }).to eql(["cat", "cat", "cat", "cat"])
       end
+    end
+  end
 
+  describe "#my_inject" do
+    context "if you specify a block" do
+      it "returns the accumulated value as a result of the block passed to each element in the collection" do
+        expect((5..10).my_inject(1) { |product, n| product * n }).to eql(151_200)
+      end
+
+      it "returns the accumulated value as a result of the block passed to each element in the collection" do
+        expect(%w{ cat sheep bear }.my_inject { |memo, word| memo.length > word.length ? memo : word }).to eql("sheep")
+      end
+
+      it "returns the accumulated value as a result of the block passed to each element in the collection" do
+        expect((5..10).my_inject { |sum, n| sum + n }).to eql(45)
+      end
+    end
+
+    context "if you don't specify a block and pass only an operator instead" do
+      it "return the accumulated value of the operation applied to each element in the collection" do
+        expect((5..10).my_inject(:+)).to eql(45)
+      end
+
+      it "return the accumulated value of the operation applied to each element in the collection" do
+        expect((5..10).reduce(1, :*)).to eql(151_200)
+      end
     end
   end
 end
