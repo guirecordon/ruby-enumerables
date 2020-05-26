@@ -14,7 +14,7 @@ Microverse/Odin Project - Solo Project
 - map
 - inject
 
-I kept a file called tests.rb in the root directory. It prints out the tests made for each method. You run it by typing <ruby tests.rb> inside of the root directory in the terminal.
+I kept a file called tests.rb in the root directory. It prints out the tests made for each method. You run it by typing <p background="red">ruby tests.rb</p> inside of the root directory in the terminal.
 
 The real Rspec tests, however, are run simply by running <rspec> or <rspec --format documentation> also inside of the root directory in the terminal.
 
