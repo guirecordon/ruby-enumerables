@@ -3,6 +3,9 @@ AllCops:
     - "README.md"
     - "Guardfile"
     - "Rakefile"
+    - "tests.rb"
+    - "Gemfile"
+    - "spec/spec_helper.rb"
 
   DisplayCopNames: true
 

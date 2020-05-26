@@ -27,7 +27,7 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    for i in 0...length 
+    for i in 0...length
       if block_given?
         return false unless yield(self[i])
       elsif arg
