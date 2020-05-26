@@ -14,7 +14,11 @@ Microverse/Odin Project - Solo Project
 - map
 - inject
 
-I test the methods all in the end of the document with the example tests provided in the Ruby documentation. 
+I kept a file called tests.rb in the root directory. It prints out the tests made for each method. You run it by typing `ruby tests.rb` inside of the root directory in the terminal.
+
+The real Rspec tests, however, are run simply by running `rspec` or `rspec --format documentation` also inside of the root directory in the terminal.
+
+Please reach out if there are any questions.
 
 ## Built With
 
