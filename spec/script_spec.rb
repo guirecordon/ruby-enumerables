@@ -70,13 +70,13 @@ describe Enumerable do
       it 'returns true if the block never returns false or nil' do
         expect(words.my_all?(&block1)).to eql(true)
       end
-      it 'returns true if the block never returns false or nil' do
+      it 'returns false if the block returns some false or nil elements' do
         expect(words.my_all?(&block2)).to eql(false)
       end
     end
 
     context 'when no block is given, instead a pattern is supplied' do
-      it 'returns true if pattern === element' do
+      it 'returns false if pattern != some element' do
         expect(words.my_all?(/t/)).to eql(false)
       end
 
@@ -86,11 +86,11 @@ describe Enumerable do
     end
 
     context 'when no pattern nor block is supplied' do
-      it 'return true if none of the collection members are false or nil' do
+      it 'returns false if any of the collection members are false or nil' do
         expect([nil, true, 99].my_all?).to eql(false)
       end
 
-      it 'return true if none of the collection members are false or nil' do
+      it 'returns true if none of the collection members are false or nil' do
         expect([].my_all?).to eql(true)
       end
     end
